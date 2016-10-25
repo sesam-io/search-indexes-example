@@ -1,0 +1,46 @@
+[
+    {
+        "_id": "products-solr",
+        "type": "pipe",
+        "source": {
+            "type": "dataset",
+            "dataset": "products"
+        },
+        "transform": {
+            "type": "dtl",
+            "rules": {
+                "default": [
+                    ["copy", "*"],
+                    ["merge", ["apply-hops", "category", {
+                        "datasets": ["categories c"],
+                        "where": [
+                            ["eq", "_S.categoryID", "c.categoryID"]
+                        ]
+                    }]]
+                ],
+                "category": [
+                    ["add", "categoryName", "_S.categoryName"],
+                    ["add", "categoryDesc", "_S.description"]
+                ]
+            }
+        }
+    },
+    {
+        "_id": "solr-system",
+        "type": "system:solr",
+        "url": "http://YOUR-IP-HERE:8983/solr/northwind"
+    },
+    {
+        "_id": "solr-products-index",
+        "name": "products: solr",
+        "type": "pipe",
+        "source": {
+            "type": "dataset",
+            "dataset": "products-solr"
+        },
+        "sink": {
+            "type": "solr",
+            "system": "solr-system"
+        }
+    }
+]

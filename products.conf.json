@@ -1,0 +1,31 @@
+[
+    {
+        "_id": "northwind-system",
+        "type": "system:url",
+        "base_url": "http://YOUR-IP-HERE:8000/"
+    },
+    {
+        "_id": "products",
+        "type": "pipe",
+        "source": {
+            "type": "csv",
+            "system": "northwind-system",
+            "url": "products.csv",
+            "primary_key": "productID",
+            "auto_dialect": false,
+            "dialect": "unix_dialect"
+        }
+    },
+    {
+        "_id": "categories",
+        "type": "pipe",
+        "source": {
+            "type": "csv",
+            "system": "northwind-system",
+            "url": "categories.csv",
+            "primary_key": "categoryID",
+            "auto_dialect": false,
+            "dialect": "unix_dialect"
+        }
+    }
+]

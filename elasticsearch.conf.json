@@ -1,0 +1,48 @@
+[
+    {
+        "_id": "products-elasticsearch",
+        "type": "pipe",
+        "source": {
+            "type": "dataset",
+            "dataset": "products"
+        },
+        "transform": {
+            "type": "dtl",
+            "rules": {
+                "default": [
+                    ["copy", "*"],
+                    ["merge", ["apply-hops", "category", {
+                        "datasets": ["categories c"],
+                        "where": [
+                            ["eq", "_S.categoryID", "c.categoryID"]
+                        ]
+                    }]]
+                ],
+                "category": [
+                    ["add", "categoryName", "_S.categoryName"],
+                    ["add", "categoryDesc", "_S.description"]
+                ]
+            }
+        }
+    },
+    {
+        "_id": "elasticsearch-system",
+        "type": "system:elasticsearch",
+        "hosts": ["YOUR-IP-HERE:9200"]
+    },
+    {
+        "_id": "elasticsearch-products-index",
+        "name": "products: elasticsearch",
+        "type": "pipe",
+        "source": {
+            "type": "dataset",
+            "dataset": "products-elasticsearch"
+        },
+        "sink": {
+            "type": "elasticsearch",
+            "system": "elasticsearch-system",
+            "default_index": "northwind",
+            "default_type": "product"
+        }
+    }
+]
